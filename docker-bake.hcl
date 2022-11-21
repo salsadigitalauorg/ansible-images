@@ -15,7 +15,7 @@ variable "IMAGE_TAG" {
 }
 
 group "default" {
-    targets = ["ansible-test"]
+    targets = ["ansible-runner"]
 }
 
 target "ansible-images-base" {
@@ -27,4 +27,10 @@ target "ansible-test" {
     inherits = ["ansible-images-base"]
     dockerfile = "Dockerfile.ansible-test"
     tags = ["${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-test:${IMAGE_TAG}"]
+}
+
+target "ansible-runner" {
+    inherits = ["ansible-images-base"]
+    dockerfile = "Dockerfile.ansible-runner"
+    tags = ["${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner:${IMAGE_TAG}"]
 }
