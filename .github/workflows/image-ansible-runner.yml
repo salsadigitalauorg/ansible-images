@@ -3,6 +3,8 @@ name: ansible-runner image
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'Dockerfile.ansible-runner'
   workflow_dispatch:
 
 env:
