@@ -14,6 +14,14 @@ variable "IMAGE_TAG" {
     default = "latest"
 }
 
+variable "DEFAULT_PYTHON_VERSION" {
+    default = "3.11"
+}
+
+variable "PYTHON_VERSION" {
+    default = DEFAULT_PYTHON_VERSION
+}
+
 group "default" {
     targets = ["ansible-runner"]
 }
@@ -21,6 +29,18 @@ group "default" {
 target "ansible-images-base" {
     labels = {"org.opencontainers.image.source": "${ANSIBLE_IMAGES_REPO}"}
     platforms = ["linux/amd64", "linux/arm64"]
+}
+
+target "ansible" {
+    inherits = ["ansible-images-base"]
+    dockerfile = "Dockerfile.ansible"
+    tags = [
+        "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible:${PYTHON_VERSION}",
+        equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible:${IMAGE_TAG}": "",
+    ]
+    args = {
+        PYTHON_VERSION = "${PYTHON_VERSION}"
+    }
 }
 
 target "ansible-test" {
