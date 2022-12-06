@@ -21,7 +21,7 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  bake-ansible-runner:
+  bake-ansible:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
