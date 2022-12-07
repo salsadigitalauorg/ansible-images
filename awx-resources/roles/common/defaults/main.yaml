@@ -1,0 +1,29 @@
+local_awx: true
+local_controller_host: http://localhost:31080
+local_controller_username: admin
+local_controller_password: pass
+
+controller_host: "{{ local_awx|bool | ternary(local_controller_host, lookup('ansible.builtin.env', 'CONTROLLER_HOST')) }}"
+controller_username: "{{ local_awx|bool | ternary(local_controller_username, lookup('ansible.builtin.env', 'CONTROLLER_USERNAME')) }}"
+controller_password: "{{ local_awx|bool | ternary(local_controller_password, None) }}"
+controller_oauthtoken: "{{ local_awx|bool | ternary(None, lookup('ansible.builtin.env', 'CONTROLLER_OAUTH_TOKEN')) }}"
+
+resource_dir: /resources
+
+# List of all asset types supported for downloading and creating.
+supported_asset_types:
+  - organizations
+  - users
+  - teams
+  - execution_environments
+  - credential_types
+  - credentials
+  - projects
+  - inventory
+  - inventory_sources
+  - job_templates
+  - workflow_job_templates
+  - workflow_job_template_nodes
+  - schedules
+
+asset_types: "{{ supported_asset_types }}"

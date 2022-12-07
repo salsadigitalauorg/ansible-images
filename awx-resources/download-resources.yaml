@@ -1,0 +1,19 @@
+- name: Download AWX resources.
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+  - common
+  tasks:
+  - name: Ensure main resources dir exists
+    file:
+      path: "{{ resource_dir }}"
+      state: directory
+
+  - name: Download resources
+    include_role:
+      name: download-resources
+    loop: "{{ asset_types }}"
+    loop_control:
+      loop_var: asset_type
+

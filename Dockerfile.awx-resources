@@ -1,0 +1,5 @@
+ARG ANSIBLE_IMAGE_VERSION
+
+FROM ghcr.io/salsadigitalauorg/ansible:${ANSIBLE_IMAGE_VERSION}
+
+COPY awx-resources /playbooks

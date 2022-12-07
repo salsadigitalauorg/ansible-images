@@ -22,6 +22,10 @@ variable "PYTHON_VERSION" {
     default = DEFAULT_PYTHON_VERSION
 }
 
+variable "ANSIBLE_IMAGE_VERSION" {
+    default = "latest"
+}
+
 group "default" {
     targets = ["ansible-runner"]
 }
@@ -53,4 +57,13 @@ target "ansible-runner" {
     inherits = ["ansible-images-base"]
     dockerfile = "Dockerfile.ansible-runner"
     tags = ["${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner:${IMAGE_TAG}"]
+}
+
+target "awx-resources" {
+    inherits = ["ansible-images-base"]
+    dockerfile = "Dockerfile.awx-resources"
+    tags = ["${IMAGE_REGISTRY}/${IMAGE_ORG}/awx-resources:${IMAGE_TAG}"]
+    args = {
+        ANSIBLE_IMAGE_VERSION = "${ANSIBLE_IMAGE_VERSION}"
+    }
 }

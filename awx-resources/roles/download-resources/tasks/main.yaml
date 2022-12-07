@@ -1,0 +1,62 @@
+- name: "Unsupported asset type: {{ asset_type }}"
+  fail:
+  when: asset_type not in supported_asset_types
+
+- name: "Export resources for {{ asset_type }}"
+  export_partial:
+    controller_host: "{{ controller_host }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password | default(omit) }}"
+    controller_oauthtoken: "{{ controller_oauthtoken | default(omit) }}"
+    organizations: "{{ (asset_type == 'organizations') | ternary('all', omit) }}"
+    users: "{{ (asset_type == 'users') | ternary('all', omit) }}"
+    teams: "{{ (asset_type == 'teams') | ternary('all', omit) }}"
+    execution_environments: "{{ (asset_type == 'execution_environments') | ternary('all', omit) }}"
+    credential_types: "{{ (asset_type == 'credential_types') | ternary('all', omit) }}"
+    credentials: "{{ (asset_type == 'credentials') | ternary('all', omit) }}"
+    projects: "{{ (asset_type == 'projects') | ternary('all', omit) }}"
+    inventory: "{{ (asset_type == 'inventory') | ternary('all', omit) }}"
+    inventory_sources: "{{ (asset_type == 'inventory_sources') | ternary('all', omit) }}"
+    job_templates: "{{ (asset_type == 'job_templates') | ternary('all', omit) }}"
+    workflow_job_templates: "{{ (asset_type == 'workflow_job_templates') | ternary('all', omit) }}"
+    workflow_job_template_nodes: "{{ (asset_type == 'workflow_job_template_nodes') | ternary('all', omit) }}"
+    schedules: "{{ (asset_type == 'schedules') | ternary('all', omit) }}"
+  register: resources
+
+- name: "Set asset directory for {{ asset_type }}"
+  set_fact:
+    asset_dir: "{{ [resource_dir, asset_type] | path_join }}"
+
+- name: "Ensure directory exists for {{ asset_type }}"
+  file:
+    path: "{{ asset_dir }}"
+    state: directory
+
+- name: "Set name field for {{ asset_type }}"
+  set_fact:
+    asset_name_field: username
+  when: asset_type == 'users'
+
+- name: "Set name field for {{ asset_type }}"
+  set_fact:
+    asset_name_field: identifier
+  when: asset_type == 'workflow_job_template_nodes'
+
+- name: "Set name field for {{ asset_type }}"
+  set_fact:
+    asset_name_field: name
+  when:
+    - asset_type != 'users'
+    - asset_type != 'workflow_job_template_nodes'
+
+- name: "Create file for each {{ asset_type }} asset"
+  copy:
+    content: "{{ asset | to_nice_yaml(indent=2) }}"
+    dest: "{{ asset_filename }}"
+  loop: "{{ assets }}"
+  loop_control:
+    loop_var: asset
+    label: "{{ asset[asset_name_field] }}"
+  vars:
+    assets: "{{ resources.assets[asset_type] }}"
+    asset_filename: "{{ [asset_dir, (asset[asset_name_field]|valid_filename|lower) + '.yaml'] | path_join }}"

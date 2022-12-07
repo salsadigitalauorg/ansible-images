@@ -3,7 +3,8 @@ ARG PYTHON_VERSION
 FROM python:${PYTHON_VERSION}
 
 RUN python3 -m pip install ansible awxkit \
-    && ansible-galaxy collection install awx.awx
+    && ansible-galaxy collection install awx.awx \
+    && mkdir /playbooks
 
 WORKDIR /playbooks
 
