@@ -9,7 +9,7 @@ on:
     inputs:
       python_version:
         description: 'Version of Python to use'
-        default: '3.11'
+        default: '3.10'
         type: choice
         options:
         - '3.8'

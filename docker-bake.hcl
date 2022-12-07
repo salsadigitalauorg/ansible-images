@@ -15,7 +15,7 @@ variable "IMAGE_TAG" {
 }
 
 variable "DEFAULT_PYTHON_VERSION" {
-    default = "3.11"
+    default = "3.10"
 }
 
 variable "PYTHON_VERSION" {
