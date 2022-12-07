@@ -4,6 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
+      - '.github/workflows/image-ansible.yml'
       - 'Dockerfile.ansible'
   workflow_dispatch:
     inputs:

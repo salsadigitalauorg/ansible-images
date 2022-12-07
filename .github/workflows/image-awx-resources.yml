@@ -4,6 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
+      - '.github/workflows/image-awx-resources.yml'
       - 'Dockerfile.awx-resources'
   workflow_dispatch:
     inputs:
