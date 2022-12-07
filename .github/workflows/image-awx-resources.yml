@@ -54,6 +54,6 @@ jobs:
         uses: docker/bake-action@v2
         with:
           push: true
-          targets: ansible
+          targets: awx-resources
         env:
           ANSIBLE_IMAGE_VERSION: ${{ steps.ansible_image_version.outputs.value }}
