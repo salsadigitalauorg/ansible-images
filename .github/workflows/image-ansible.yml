@@ -23,8 +23,6 @@ env:
 jobs:
   bake-ansible:
     runs-on: ubuntu-latest
-    env:
-      PYTHON_VERSION: ${{ inputs.python_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -44,8 +42,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set python_version value
+        id: python_version
+        run: |
+          PYTHON_VERSION=${{ inputs.python_version }}
+          echo "::set-output name=value::${PYTHON_VERSION:-"3.10"}"
+
       - name: Build and push
         uses: docker/bake-action@v2
         with:
           push: true
           targets: ansible
+        env:
+          PYTHON_VERSION: ${{ steps.python_version.outputs.value }}

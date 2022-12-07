@@ -44,8 +44,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set python_version value
+        id: ansible_image_version
+        run: |
+          ANSIBLE_IMAGE_VERSION=${{ inputs.ansible_image_version }}
+          echo "::set-output name=value::${ANSIBLE_IMAGE_VERSION:-"3.10"}"
+
       - name: Build and push
         uses: docker/bake-action@v2
         with:
           push: true
           targets: ansible
+        env:
+          ANSIBLE_IMAGE_VERSION: ${{ steps.ansible_image_version.outputs.value }}
