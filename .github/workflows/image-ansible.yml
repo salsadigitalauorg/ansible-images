@@ -23,6 +23,8 @@ env:
 jobs:
   bake-ansible:
     runs-on: ubuntu-latest
+    env:
+      PYTHON_VERSION: ${{ inputs.python_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
