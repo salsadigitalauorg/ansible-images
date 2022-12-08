@@ -16,7 +16,8 @@ on:
         - '3.8'
         - '3.9'
         - '3.10'
-        - '3.11'
+        # See reason for disabling 3.11 in image-python-crossbuild.yml.
+        # - '3.11'
 
 env:
   REGISTRY: ghcr.io
