@@ -2,4 +2,8 @@ ARG ANSIBLE_IMAGE_VERSION
 
 FROM ghcr.io/salsadigitalauorg/ansible:${ANSIBLE_IMAGE_VERSION}
 
+RUN set -eux; \
+    pip install awxkit; \
+    ansible-galaxy collection install awx.awx;
+
 COPY awx-resources /playbooks
