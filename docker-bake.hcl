@@ -37,6 +37,9 @@ target "python-crossbuild" {
         "${IMAGE_REGISTRY}/${IMAGE_ORG}/python-crossbuild:${PYTHON_VERSION}",
         equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/python-crossbuild:${IMAGE_TAG}": "",
     ]
+    args = {
+        PYTHON_VERSION = "${PYTHON_VERSION}"
+    }
 }
 
 target "ansible-images-base" {

@@ -1,10 +1,10 @@
-ARG PYTHON_VERSION=3.8
+ARG PYTHON_VERSION
 
 FROM --platform=$TARGETPLATFORM python:${PYTHON_VERSION} AS target_python
 
 FROM --platform=$BUILDPLATFORM python:${PYTHON_VERSION} AS cross_builder
 
-ARG PYTHON_VERSION=3.8
+ARG PYTHON_VERSION
 
 COPY --from=target_python /usr/local/bin/python${PYTHON_VERSION} /usr/local/bin/target_python
 

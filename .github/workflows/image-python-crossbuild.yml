@@ -7,16 +7,6 @@ on:
       - '.github/workflows/image-python-crossbuild.yml'
       - 'Dockerfile.python-crossbuild'
   workflow_dispatch:
-    inputs:
-      python_version:
-        description: 'Version of Python to use'
-        default: '3.10'
-        type: choice
-        options:
-        - '3.8'
-        - '3.9'
-        - '3.10'
-        - '3.11'
 
 env:
   REGISTRY: ghcr.io
@@ -24,6 +14,9 @@ env:
 jobs:
   bake-python-crossbuild:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python_version: [3.8, 3.9, 3.10, 3.11]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -43,16 +36,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set python_version value
-        id: python_version
-        run: |
-          PYTHON_VERSION=${{ inputs.python_version }}
-          echo "::set-output name=value::${PYTHON_VERSION:-"3.10"}"
-
       - name: Build and push
         uses: docker/bake-action@v2
         with:
           push: true
           targets: python-crossbuild
         env:
-          PYTHON_VERSION: ${{ steps.python_version.outputs.value }}
+          PYTHON_VERSION: ${{ matrix.python_version }}
