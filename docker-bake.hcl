@@ -30,6 +30,15 @@ group "default" {
     targets = ["ansible-runner"]
 }
 
+target "python-crossbuild" {
+    labels = {"org.opencontainers.image.source": "${ANSIBLE_IMAGES_REPO}"}
+    dockerfile = "Dockerfile.python-crossbuild"
+    tags = [
+        "${IMAGE_REGISTRY}/${IMAGE_ORG}/python-crossbuild:${PYTHON_VERSION}",
+        equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/python-crossbuild:${IMAGE_TAG}": "",
+    ]
+}
+
 target "ansible-images-base" {
     labels = {"org.opencontainers.image.source": "${ANSIBLE_IMAGES_REPO}"}
     platforms = ["linux/amd64", "linux/arm64"]
