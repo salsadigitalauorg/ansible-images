@@ -69,6 +69,18 @@ target "ansible-runner" {
     }
 }
 
+target "ansible-runner-php" {
+    inherits = ["ansible-images-base"]
+    dockerfile = "Dockerfile.ansible-runner-php"
+    tags = [
+        "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner-php:${PYTHON_VERSION}",
+        equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner-php:latest": "",
+    ]
+    args = {
+        PYTHON_VERSION = "${PYTHON_VERSION}"
+    }
+}
+
 target "awx-resources" {
     inherits = ["ansible-images-base"]
     dockerfile = "Dockerfile.awx-resources"
