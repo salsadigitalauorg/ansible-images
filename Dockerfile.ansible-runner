@@ -1,16 +1,37 @@
-FROM php:8.1-cli
+ARG PYTHON_VERSION
 
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+FROM --platform=$TARGETPLATFORM ghcr.io/salsadigitalauorg/ansible:${PYTHON_VERSION} AS built_ansible
 
-RUN apt-get update && apt-get install -y \
+FROM --platform=$BUILDPLATFORM ghcr.io/salsadigitalauorg/python-crossbuild:${PYTHON_VERSION} AS cross_builder
+
+ARG PYTHON_VERSION
+
+COPY --from=built_ansible /usr/local/lib/python${PYTHON_VERSION}/site-packages/ /cross_venv/cross/lib/python${PYTHON_VERSION}/site-packages/
+COPY --from=built_ansible /usr/local/bin/ansible* /cross_venv/cross/bin/
+
+RUN set -eux; \
+    . /cross_venv/bin/activate; \
+    pip install ansible-runner bindep; \
+    rm -rf /cross_venv/cross/lib/${PYTHON_VERSION}/site-packages/__pycache__; \
+    cd /cross_venv/cross/bin && rm -rf __pycache__ activate* python* && cd /; \
+    sed -i 's#/cross_venv/cross/bin/python3#/usr/local/bin/python3#' /cross_venv/cross/bin/*;
+
+FROM --platform=$TARGETPLATFORM python:${PYTHON_VERSION}
+
+ARG PYTHON_VERSION
+
+COPY --from=cross_builder /cross_venv/cross/lib/python${PYTHON_VERSION}/site-packages/ /usr/local/lib/python${PYTHON_VERSION}/site-packages/
+COPY --from=cross_builder /cross_venv/cross/bin/ /usr/local/bin/
+
+COPY --from=quay.io/ansible/ansible-runner:latest /bin/entrypoint /bin/entrypoint
+
+RUN set -eux; \
+    apt-get update && apt-get install -y \
         dumb-init \
         git git-lfs \
         jq \
-        python3 python3-pip \
         rsync \
-        zip unzip \
-    && python3 -m pip install ansible \
-    && python3 -m pip install ansible-runner bindep
+        zip unzip;
 
 # In Kubernetes, container will run as a random uid number and gid 0. Make sure things
 # are writeable by the root group.
@@ -30,10 +51,6 @@ RUN for dir in \
     /etc/passwd \
     /etc/group ; \
     do touch $file ; chmod g+rw $file ; chgrp root $file ; done
-
-COPY --from=quay.io/ansible/ansible-runner:latest /bin/entrypoint /bin/entrypoint
-
-RUN install-php-extensions gd zip
 
 WORKDIR /runner
 

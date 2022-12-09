@@ -10,20 +10,12 @@ variable "IMAGE_ORG" {
     default = "salsadigitalauorg"
 }
 
-variable "IMAGE_TAG" {
-    default = "latest"
-}
-
 variable "DEFAULT_PYTHON_VERSION" {
     default = "3.10"
 }
 
 variable "PYTHON_VERSION" {
     default = DEFAULT_PYTHON_VERSION
-}
-
-variable "ANSIBLE_IMAGE_VERSION" {
-    default = "latest"
 }
 
 group "default" {
@@ -35,7 +27,7 @@ target "python-crossbuild" {
     dockerfile = "Dockerfile.python-crossbuild"
     tags = [
         "${IMAGE_REGISTRY}/${IMAGE_ORG}/python-crossbuild:${PYTHON_VERSION}",
-        equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/python-crossbuild:${IMAGE_TAG}": "",
+        equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/python-crossbuild:latest": "",
     ]
     args = {
         PYTHON_VERSION = "${PYTHON_VERSION}"
@@ -52,7 +44,7 @@ target "ansible" {
     dockerfile = "Dockerfile.ansible"
     tags = [
         "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible:${PYTHON_VERSION}",
-        equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible:${IMAGE_TAG}": "",
+        equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible:latest": "",
     ]
     args = {
         PYTHON_VERSION = "${PYTHON_VERSION}"
@@ -62,20 +54,29 @@ target "ansible" {
 target "ansible-test" {
     inherits = ["ansible-images-base"]
     dockerfile = "Dockerfile.ansible-test"
-    tags = ["${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-test:${IMAGE_TAG}"]
+    tags = ["${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-test:latest"]
 }
 
 target "ansible-runner" {
     inherits = ["ansible-images-base"]
     dockerfile = "Dockerfile.ansible-runner"
-    tags = ["${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner:${IMAGE_TAG}"]
+    tags = [
+        "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner:${PYTHON_VERSION}",
+        equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner:latest": "",
+    ]
+    args = {
+        PYTHON_VERSION = "${PYTHON_VERSION}"
+    }
 }
 
 target "awx-resources" {
     inherits = ["ansible-images-base"]
     dockerfile = "Dockerfile.awx-resources"
-    tags = ["${IMAGE_REGISTRY}/${IMAGE_ORG}/awx-resources:${IMAGE_TAG}"]
+    tags = [
+        "${IMAGE_REGISTRY}/${IMAGE_ORG}/awx-resources:${PYTHON_VERSION}",
+        equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/awx-resources:latest": "",
+    ]
     args = {
-        ANSIBLE_IMAGE_VERSION = "${ANSIBLE_IMAGE_VERSION}"
+        PYTHON_VERSION = "${PYTHON_VERSION}"
     }
 }
