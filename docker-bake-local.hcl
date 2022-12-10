@@ -17,6 +17,12 @@ target "ansible-runner-php" {
     }
 }
 
+target "ansible-test" {
+    contexts = {
+        "ghcr.io/salsadigitalauorg/python-crossbuild:${PYTHON_VERSION}" = "target:python-crossbuild"
+    }
+}
+
 target "awx-resources" {
     contexts = {
         "ghcr.io/salsadigitalauorg/ansible:${PYTHON_VERSION}" = "target:ansible"

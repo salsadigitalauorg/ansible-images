@@ -1,39 +1,63 @@
-FROM alpine AS builder
+FROM --platform=$BUILDPLATFORM ghcr.io/salsadigitalauorg/python-crossbuild:3.8 AS cross_builder_38
 
-ENV PYENV_ROOT=/opt/.pyenv
+RUN set -eux; \
+    . /cross_venv/bin/activate; \
+    pip install ansible multidict pytest pytest-forked yarl; \
+    rm -rf /cross_venv/cross/lib/python3.8/site-packages/__pycache__; \
+    cd /cross_venv/cross/bin && rm -rf __pycache__ activate* python* && cd /; \
+    sed -i 's#/cross_venv/cross/bin/python3#/usr/local/bin/python3#' /cross_venv/cross/bin/*;
 
-ENV PATH="$PYENV_ROOT/bin:$PATH"
-ENV PATH="$PYENV_ROOT/versions/3.11.0/bin:$PATH"
-ENV PATH="$PYENV_ROOT/versions/3.10.8/bin:$PATH"
-ENV PATH="$PYENV_ROOT/versions/3.9.15/bin:$PATH"
-ENV PATH="$PYENV_ROOT/versions/3.8.15/bin:$PATH"
+FROM --platform=$BUILDPLATFORM ghcr.io/salsadigitalauorg/python-crossbuild:3.9 AS cross_builder_39
 
-RUN apk add --no-cache bash git \
-    && git clone https://github.com/pyenv/pyenv.git $PYENV_ROOT \
-    && apk add --no-cache --virtual .build-deps \
-        build-base libffi-dev openssl-dev bzip2-dev \
-        zlib-dev xz-dev readline-dev sqlite-dev tk-dev \
-    && pyenv install 3.8.15 \
-    && pyenv install 3.9.15 \
-    && pyenv install 3.10.8 \
-    && pyenv install 3.11.0 \
-    && python3.8 -m pip install ansible pytest pytest-forked \
-    && python3.9 -m pip install ansible pytest pytest-forked \
-    && python3.10 -m pip install ansible pytest pytest-forked \
-    && python3.11 -m pip install ansible pytest pytest-forked
+RUN set -eux; \
+    . /cross_venv/bin/activate; \
+    pip install ansible multidict pytest pytest-forked yarl; \
+    rm -rf /cross_venv/cross/lib/python3.9/site-packages/__pycache__; \
+    cd /cross_venv/cross/bin && rm -rf __pycache__ activate* python* && cd /; \
+    sed -i 's#/cross_venv/cross/bin/python3#/usr/local/bin/python3#' /cross_venv/cross/bin/*;
 
-FROM alpine
+FROM --platform=$BUILDPLATFORM ghcr.io/salsadigitalauorg/python-crossbuild:3.10 AS cross_builder_310
 
-ENV PYENV_ROOT=/opt/.pyenv
+RUN set -eux; \
+    . /cross_venv/bin/activate; \
+    pip install ansible multidict pytest pytest-forked yarl; \
+    rm -rf /cross_venv/cross/lib/python3.10/site-packages/__pycache__; \
+    cd /cross_venv/cross/bin && rm -rf __pycache__ activate* python* && cd /; \
+    sed -i 's#/cross_venv/cross/bin/python3#/usr/local/bin/python3#' /cross_venv/cross/bin/*;
 
-ENV PATH="$PYENV_ROOT/bin:$PATH"
-ENV PATH="$PYENV_ROOT/versions/3.11.0/bin:$PATH"
-ENV PATH="$PYENV_ROOT/versions/3.10.8/bin:$PATH"
-ENV PATH="$PYENV_ROOT/versions/3.9.15/bin:$PATH"
-ENV PATH="$PYENV_ROOT/versions/3.8.15/bin:$PATH"
+FROM --platform=$TARGETPLATFORM python:3.8 AS python_38
+FROM --platform=$TARGETPLATFORM python:3.9 AS python_39
+FROM --platform=$TARGETPLATFORM python:3.10 AS python_310
 
-COPY --from=builder $PYENV_ROOT $PYENV_ROOT
+FROM buildpack-deps:bullseye
 
-RUN apk add --no-cache libffi
+RUN mkdir -p /opt/pythons/3.8 /opt/pythons/3.9 /opt/pythons/3.10
+
+COPY --from=python_38 /usr/local/bin/ /opt/pythons/3.8/bin/
+COPY --from=python_38 /usr/local/lib/ /usr/local/lib/
+COPY --from=cross_builder_38 /cross_venv/cross/lib/python3.8/site-packages/ /usr/local/lib/python3.8/site-packages/
+COPY --from=cross_builder_38 /cross_venv/cross/bin/ /opt/pythons/3.8/bin/
+
+COPY --from=python_39 /usr/local/bin/ /opt/pythons/3.9/bin/
+COPY --from=python_39 /usr/local/lib/ /usr/local/lib/
+COPY --from=cross_builder_39 /cross_venv/cross/lib/python3.9/site-packages/ /usr/local/lib/python3.9/site-packages/
+COPY --from=cross_builder_39 /cross_venv/cross/bin/ /opt/pythons/3.9/bin/
+
+COPY --from=python_310 /usr/local/bin/ /opt/pythons/3.10/bin/
+COPY --from=python_310 /usr/local/lib/ /usr/local/lib/
+COPY --from=cross_builder_310 /cross_venv/cross/lib/python3.10/site-packages/ /usr/local/lib/python3.10/site-packages/
+COPY --from=cross_builder_310 /cross_venv/cross/bin/ /opt/pythons/3.10/bin/
+
+ENV PATH="/opt/pythons/3.8/bin:$PATH"
+ENV PATH="/opt/pythons/3.9/bin:$PATH"
+ENV PATH="/opt/pythons/3.10/bin:$PATH"
+
+RUN set -eux; \
+    ldconfig; \
+    python3.8 --version; \
+    python3.9 --version; \
+    python3.10 --version; \
+    ln -s /opt/pythons/3.10/bin/python3 /usr/local/bin/python3; \
+    /usr/local/bin/python3 --version;
 
 ENTRYPOINT [ "ansible-test" ]

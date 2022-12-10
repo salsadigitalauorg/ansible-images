@@ -1,6 +1,11 @@
 name: ansible-test image
 
 on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/image-ansible-test.yml'
+      - 'Dockerfile.ansible-test'
   workflow_dispatch:
 
 env:

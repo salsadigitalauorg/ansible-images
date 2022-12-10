@@ -12,7 +12,7 @@ COPY --from=built_ansible /usr/local/bin/ansible* /cross_venv/cross/bin/
 RUN set -eux; \
     . /cross_venv/bin/activate; \
     pip install ansible-runner bindep; \
-    rm -rf /cross_venv/cross/lib/${PYTHON_VERSION}/site-packages/__pycache__; \
+    rm -rf /cross_venv/cross/lib/python${PYTHON_VERSION}/site-packages/__pycache__; \
     cd /cross_venv/cross/bin && rm -rf __pycache__ activate* python* && cd /; \
     sed -i 's#/cross_venv/cross/bin/python3#/usr/local/bin/python3#' /cross_venv/cross/bin/*;
 
