@@ -5,9 +5,7 @@ Python versions:
   - 3.8
   - 3.9
   - 3.10
-
-> Python 3.11 is not supported at the moment due to an [issue](https://github.com/benfogle/crossenv/issues/103) with crossenv currently.
-> Once the [PR](https://github.com/benfogle/crossenv/pull/104) is merged, we will then add it to the workflows.
+  - 3.11
 
 ## python-crossbuild
 A base python image with crossenv installed, providing the ability to

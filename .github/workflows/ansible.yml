@@ -4,7 +4,6 @@ on:
   push:
     branches: [ main ]
     paths:
-      - '.github/workflows/ansible.yml'
       - 'ansible/Dockerfile'
   workflow_dispatch:
     inputs:
@@ -16,8 +15,7 @@ on:
         - '3.8'
         - '3.9'
         - '3.10'
-        # See reason for disabling 3.11 in image-python-crossbuild.yml.
-        # - '3.11'
+        - '3.11'
 
 env:
   REGISTRY: ghcr.io

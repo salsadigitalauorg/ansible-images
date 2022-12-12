@@ -4,7 +4,6 @@ on:
   push:
     branches: [ main ]
     paths:
-      - '.github/workflows/python-crossbuild.yml'
       - 'python-crossbuild/Dockerfile'
   workflow_dispatch:
 
@@ -20,10 +19,7 @@ jobs:
           - '3.8'
           - '3.9'
           - '3.10'
-          # 3.11 is failing with ERROR: module 'sysconfig' has no attribute '_is_python_source_dir'
-          # Follow https://github.com/benfogle/crossenv/issues/103 &
-          # https://github.com/benfogle/crossenv/pull/104 for more.
-          # - '3.11'
+          - '3.11'
     steps:
       - name: Checkout
         uses: actions/checkout@v3

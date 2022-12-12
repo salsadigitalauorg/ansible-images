@@ -4,7 +4,6 @@ on:
   push:
     branches: [ main ]
     paths:
-      - '.github/workflows/ansible-test.yml'
       - 'ansible-test/Dockerfile'
   workflow_dispatch:
 
