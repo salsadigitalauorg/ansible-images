@@ -29,8 +29,7 @@ More information & usage [here](ansible-test).
 ## ansible-runner
 Building from the **python-crossbuild** and **ansible** images and using the
 official Docker python base image, while also taking bits and pieces from the
-official [ansible-runner](quay.io/ansible/ansible-runner) to create a base for
-AWX Execution Environments that are multiarch and more versatile.
+official [ansible-runner](https://github.com/ansible/ansible-runner/blob/devel/Dockerfile) image to create a base for AWX Execution Environments that are multiarch and more versatile.
 
 More information & usage [here](ansible-runner).
 
