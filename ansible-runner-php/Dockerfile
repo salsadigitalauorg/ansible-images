@@ -8,4 +8,7 @@ RUN set -eux; \
         php8.1-cli \
         php8.1-gd \
         php8.1-zip; \
-    rm -rf /var/lib/apt/lists/*;
+    rm -rf /var/lib/apt/lists/*;\
+    curl -sS https://getcomposer.org/download/latest-stable/composer.phar --output composer.phar;\
+    chmod +x composer.phar;\
+    mv composer.phar /usr/local/bin/composer
