@@ -24,7 +24,7 @@ group "default" {
 
 target "python-crossbuild" {
     labels = {"org.opencontainers.image.source": "${ANSIBLE_IMAGES_REPO}"}
-    dockerfile = "Dockerfile.python-crossbuild"
+    context = "python-crossbuild"
     tags = [
         "${IMAGE_REGISTRY}/${IMAGE_ORG}/python-crossbuild:${PYTHON_VERSION}",
         equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/python-crossbuild:latest": "",
@@ -41,7 +41,7 @@ target "ansible-images-base" {
 
 target "ansible" {
     inherits = ["ansible-images-base"]
-    dockerfile = "Dockerfile.ansible"
+    context = "ansible"
     tags = [
         "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible:${PYTHON_VERSION}",
         equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible:latest": "",
@@ -53,13 +53,13 @@ target "ansible" {
 
 target "ansible-test" {
     inherits = ["ansible-images-base"]
-    dockerfile = "Dockerfile.ansible-test"
+    context = "ansible-test"
     tags = ["${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-test:latest"]
 }
 
 target "ansible-runner" {
     inherits = ["ansible-images-base"]
-    dockerfile = "Dockerfile.ansible-runner"
+    context = "ansible-runner"
     tags = [
         "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner:${PYTHON_VERSION}",
         equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner:latest": "",
@@ -71,7 +71,7 @@ target "ansible-runner" {
 
 target "ansible-runner-php" {
     inherits = ["ansible-images-base"]
-    dockerfile = "Dockerfile.ansible-runner-php"
+    context = "ansible-runner-php"
     tags = [
         "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner-php:${PYTHON_VERSION}",
         equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner-php:latest": "",
@@ -83,7 +83,7 @@ target "ansible-runner-php" {
 
 target "awx-resources" {
     inherits = ["ansible-images-base"]
-    dockerfile = "Dockerfile.awx-resources"
+    context = "awx-resources"
     tags = [
         "${IMAGE_REGISTRY}/${IMAGE_ORG}/awx-resources:${PYTHON_VERSION}",
         equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/awx-resources:latest": "",

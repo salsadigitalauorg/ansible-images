@@ -1,18 +1,18 @@
-name: ansible-test image
+name: ansible-runner
 
 on:
   push:
     branches: [ main ]
     paths:
-      - '.github/workflows/image-ansible-test.yml'
-      - 'Dockerfile.ansible-test'
+      - '.github/workflows/ansible-runner.yml'
+      - 'ansible-runner/Dockerfile'
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
 
 jobs:
-  bake-ansible-test:
+  bake:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,4 +37,4 @@ jobs:
         uses: docker/bake-action@v2
         with:
           push: true
-          targets: ansible-test
+          targets: ansible-runner

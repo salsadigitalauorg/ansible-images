@@ -1,12 +1,23 @@
-name: ansible-runner-php image
+name: ansible
 
 on:
   push:
     branches: [ main ]
     paths:
-      - '.github/workflows/image-ansible-runner-php.yml'
-      - 'Dockerfile.ansible-runner-php'
+      - '.github/workflows/ansible.yml'
+      - 'ansible/Dockerfile'
   workflow_dispatch:
+    inputs:
+      python_version:
+        description: 'Version of Python to use'
+        default: '3.10'
+        type: choice
+        options:
+        - '3.8'
+        - '3.9'
+        - '3.10'
+        # See reason for disabling 3.11 in image-python-crossbuild.yml.
+        # - '3.11'
 
 env:
   REGISTRY: ghcr.io
@@ -33,8 +44,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set python_version value
+        id: python_version
+        run: |
+          PYTHON_VERSION=${{ inputs.python_version }}
+          echo "::set-output name=value::${PYTHON_VERSION:-"3.10"}"
+
       - name: Build and push
         uses: docker/bake-action@v2
         with:
           push: true
-          targets: ansible-runner-php
+          targets: ansible
+        env:
+          PYTHON_VERSION: ${{ steps.python_version.outputs.value }}

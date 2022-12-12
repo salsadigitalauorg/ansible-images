@@ -1,18 +1,18 @@
-name: python-crossbuild image
+name: python-crossbuild
 
 on:
   push:
     branches: [ main ]
     paths:
-      - '.github/workflows/image-python-crossbuild.yml'
-      - 'Dockerfile.python-crossbuild'
+      - '.github/workflows/python-crossbuild.yml'
+      - 'python-crossbuild/Dockerfile'
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
 
 jobs:
-  bake-python-crossbuild:
+  bake:
     runs-on: ubuntu-latest
     strategy:
       matrix:

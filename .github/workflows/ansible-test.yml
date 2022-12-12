@@ -1,29 +1,18 @@
-name: ansible image
+name: ansible-test
 
 on:
   push:
     branches: [ main ]
     paths:
-      - '.github/workflows/image-ansible.yml'
-      - 'Dockerfile.ansible'
+      - '.github/workflows/ansible-test.yml'
+      - 'ansible-test/Dockerfile'
   workflow_dispatch:
-    inputs:
-      python_version:
-        description: 'Version of Python to use'
-        default: '3.10'
-        type: choice
-        options:
-        - '3.8'
-        - '3.9'
-        - '3.10'
-        # See reason for disabling 3.11 in image-python-crossbuild.yml.
-        # - '3.11'
 
 env:
   REGISTRY: ghcr.io
 
 jobs:
-  bake-ansible:
+  bake:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -44,16 +33,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set python_version value
-        id: python_version
-        run: |
-          PYTHON_VERSION=${{ inputs.python_version }}
-          echo "::set-output name=value::${PYTHON_VERSION:-"3.10"}"
-
       - name: Build and push
         uses: docker/bake-action@v2
         with:
           push: true
-          targets: ansible
-        env:
-          PYTHON_VERSION: ${{ steps.python_version.outputs.value }}
+          targets: ansible-test

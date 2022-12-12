@@ -1,11 +1,11 @@
-name: awx-resources image
+name: awx-resources
 
 on:
   push:
     branches: [ main ]
     paths:
-      - '.github/workflows/image-awx-resources.yml'
-      - 'Dockerfile.awx-resources'
+      - '.github/workflows/awx-resources.yml'
+      - 'awx-resources/Dockerfile'
   workflow_dispatch:
     inputs:
       ansible_image_version:
@@ -23,7 +23,7 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  bake-awx-resources:
+  bake:
     runs-on: ubuntu-latest
     env:
       ANSIBLE_IMAGE_VERSION: ${{ inputs.ansible_image_version }}
