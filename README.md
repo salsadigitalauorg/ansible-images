@@ -1,69 +1,49 @@
 # Ansible images
+A set of images to make it easier to work with Ansible, AWX and so on, on ARM.
 
-## ansible-runner
-Use as the base image for building AWX Execution Environment images. It is notoriously hard to build PHP 8.1 images that are ARM-compatible on Centos 8, on which the official [ansible-runner](https://github.com/ansible/ansible-runner) is based. Starting with the official Docker `php:8.1-cli` instead, and borrowing some of the code from the official runner allow us to efficiently build multiarch images.
-
-When running locally, you can simply build for your platform:
-```sh
-# For arm64 only.
-docker buildx bake ansible-runner --progress=plain --set "ansible-runner.platform=linux/arm64" --print
-docker buildx bake ansible-runner --progress=plain --set "ansible-runner.platform=linux/arm64" --load
-
-# For amd64 only.
-docker buildx bake ansible-runner --progress=plain --set "ansible-runner.platform=linux/amd64" --print
-docker buildx bake ansible-runner --progress=plain --set "ansible-runner.platform=linux/amd64" --load
-```
-
-An EE image can be built by creating a Dockerfile as you would:
-```Dockerfile
-FROM ghcr.io/salsadigitalauorg/ansible-runner:latest
-
-ADD bindep.txt requirements.txt requirements.yml /build/
-
-RUN bindep -f /build/bindep.txt && rm -rf /var/lib/apt/lists/* \
-    && python3 -m pip install -r /build/requirements.txt \
-    && ansible-galaxy role install -r /build/requirements.yml --roles-path /usr/share/ansible/roles \
-    && ansible-galaxy collection install -r /build/requirements.yml --collections-path /usr/share/ansible/collections
-
-RUN install-php-extensions @composer
-
-ENV COMPOSER_ALLOW_SUPERUSER=1
-```
-
-## ansible-test
-An alpine-based image for running `ansible-test` containing pyenv and the following python versions:
+Python versions:
   - 3.8
   - 3.9
   - 3.10
-  - 3.11
 
-Build the image:
-```sh
-# For arm64 only.
-docker buildx bake ansible-test --progress=plain --set "ansible-test.platform=linux/arm64" --print
-docker buildx bake ansible-test --progress=plain --set "ansible-test.platform=linux/arm64" --load
+> Python 3.11 is not supported at the moment due to an [issue](https://github.com/benfogle/crossenv/issues/103) with crossenv currently.
+> Once the [PR](https://github.com/benfogle/crossenv/pull/104) is merged, we will then add it to the workflows.
 
-# For amd64 only.
-docker buildx bake ansible-test --progress=plain --set "ansible-test.platform=linux/amd64" --print
-docker buildx bake ansible-test --progress=plain --set "ansible-test.platform=linux/amd64" --load
-```
+## python-crossbuild
+A base python image with crossenv installed, providing the ability to
+cross-compile python packages for multiarch (commonly amd64 & arm64).
+Using this method significantly reduces the time required to build multiarch
+images that require building Python packages from source as opposed to
 
-Use the image as follows from the source directory of an ansible collection you want to test:
-```sh
-docker run --rm -it -v \
-    $PWD/api:/usr/share/collections/ansible_collections/${namespace}/${collection} \
-    -w /usr/share/collections/ansible_collections/${namespace}/${collection} \
-    ghcr.io/salsadigitalauorg/ansible-test:latest units -v --requirements
-```
+More information & usage [here](python-crossbuild).
 
-For example, to test the [Lagoon Ansible collection](https://github.com/salsadigitalauorg/lagoon_ansible_collection):
-```sh
-git clone git@github.com:salsadigitalauorg/lagoon_ansible_collection.git
-cd lagoon_ansible_collection
-namespace=lagoon
-collection=api
-docker run --rm -it -v \
-    $PWD/api:/usr/share/collections/ansible_collections/${namespace}/${collection} \
-    -w /usr/share/collections/ansible_collections/${namespace}/${collection} \
-    ghcr.io/salsadigitalauorg/ansible-test:latest units -v --requirements
-```
+## ansible
+Starts from the **python-crossbuild** image and installs Ansible.
+
+More information & usage [here](ansible).
+
+## ansible-test
+Starts from the **python-crossbuild** image and installs Ansible, pytest and
+their dependencies for all the above support versions of python.
+
+More information & usage [here](ansible-test).
+
+## ansible-runner
+Building from the **python-crossbuild** and **ansible** images and using the
+official Docker python base image, while also taking bits and pieces from the
+official [ansible-runner](quay.io/ansible/ansible-runner) to create a base for
+AWX Execution Environments that are multiarch and more versatile.
+
+More information & usage [here](ansible-runner).
+
+## ansible-runner-php
+Builds on **ansible-runner** and installs PHP 8.1.
+
+More information & usage [here](ansible-runner-php).
+
+## awx-resources
+Builds on the **ansible** image, installs awxkit and the playbooks for importing
+and exporting AWX resources. Handy for tracking your inventories, job templates
+and so on in code.
+
+More information & usage [here](awx-resources).
