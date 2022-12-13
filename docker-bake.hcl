@@ -18,6 +18,10 @@ variable "PYTHON_VERSION" {
     default = DEFAULT_PYTHON_VERSION
 }
 
+variable "AWX_VERSION" {
+    default = "19.4.0"
+}
+
 group "default" {
     targets = ["ansible-runner"]
 }
@@ -79,6 +83,15 @@ target "ansible-runner-php" {
     args = {
         PYTHON_VERSION = "${PYTHON_VERSION}"
     }
+}
+
+target "awx" {
+    inherits = ["ansible-images-base"]
+    context = "awx/awx"
+    tags = [
+        "${IMAGE_REGISTRY}/${IMAGE_ORG}/awx:${AWX_VERSION}",
+    ]
+    platforms = ["linux/arm64"]
 }
 
 target "awx-resources" {

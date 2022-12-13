@@ -1,0 +1,12 @@
+17c17,19
+< RUN dnf -y module enable 'postgresql:12'
+---
+> RUN sed -i -e "s|mirrorlist=|#mirrorlist=|g" /etc/yum.repos.d/CentOS-* && \
+>     sed -i -e "s|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g" /etc/yum.repos.d/CentOS-* && \
+>     dnf -y module enable 'postgresql:12'
+76c78,80
+< RUN dnf -y module enable 'postgresql:12'
+---
+> RUN sed -i -e "s|mirrorlist=|#mirrorlist=|g" /etc/yum.repos.d/CentOS-* && \
+>     sed -i -e "s|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g" /etc/yum.repos.d/CentOS-* && \
+>     dnf -y module enable 'postgresql:12'
