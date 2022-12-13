@@ -94,6 +94,15 @@ target "awx" {
     platforms = ["linux/arm64"]
 }
 
+target "awx-ee" {
+    inherits = ["ansible-images-base"]
+    context = "awx-ee"
+    tags = [
+        "${IMAGE_REGISTRY}/${IMAGE_ORG}/awx-ee:latest",
+    ]
+    platforms = ["linux/arm64"]
+}
+
 target "awx-resources" {
     inherits = ["ansible-images-base"]
     context = "awx-resources"
