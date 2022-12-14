@@ -1,0 +1,20 @@
+- name: "Unsupported asset type: {{ asset_type }}"
+  fail:
+  when: asset_type not in supported_asset_types
+
+- name: "Set asset directory for {{ asset_type }}"
+  set_fact:
+    asset_dir: "{{ [resource_dir, asset_type] | path_join }}"
+
+- name: "Import resource for {{ asset_type }}"
+  awx.awx.import:
+    controller_host: "{{ controller_host }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password | default(omit) }}"
+    controller_oauthtoken: "{{ controller_oauthtoken | default(omit) }}"
+    assets: "{{ {asset_type: [asset_file_content]} }}"
+  loop: "{{ lookup('fileglob', asset_dir + '/*.yaml', wantlist=True) }}"
+  loop_control:
+    loop_var: asset_file
+  vars:
+    asset_file_content: "{{ lookup('file', asset_file) | from_yaml() }}"

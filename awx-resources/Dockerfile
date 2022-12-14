@@ -6,4 +6,4 @@ RUN set -eux; \
     pip install awxkit; \
     ansible-galaxy collection install awx.awx;
 
-COPY awx-resources /playbooks
+COPY playbooks /playbooks

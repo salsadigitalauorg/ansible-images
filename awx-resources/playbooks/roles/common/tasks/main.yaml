@@ -7,3 +7,4 @@
       - controller_username|length > 0
       - controller_password is defined or controller_oauthtoken is defined
       - (controller_password|length > 0) or (controller_oauthtoken|length > 0)
+    quiet: true

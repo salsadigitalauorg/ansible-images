@@ -1,0 +1,26 @@
+- name: Create AWX resources.
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+  - common
+  tasks:
+  - name: Output AWX host
+    debug: msg="Creating resources on {{ controller_host }}"
+
+  - name: Check existence of resources directory
+    stat:
+      path: "{{ resource_dir }}"
+    register: resources_dir_stat
+
+  - name: Ensure resources directory exists
+    assert:
+      that: resources_dir_stat.stat.exists
+      quiet: true
+
+  - name: Create resources
+    include_role:
+      name: create-resources
+    loop: "{{ asset_types }}"
+    loop_control:
+      loop_var: asset_type
