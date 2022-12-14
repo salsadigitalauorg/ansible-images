@@ -7,6 +7,30 @@ Python versions:
   - 3.10
   - 3.11
 
+> Quick note about using `docker buildx bake` for building single arch images locally.
+> Any of the images can be built using the command
+> ```sh
+> docker buildx bake [image=name] \
+>   --progress=plain --set "*.platform=linux/$(uname -m)" --load
+> ```
+> By default `bake` will use the `docker-container` driver, which uses a
+> BuildKit container under the hood. That comes with the side effect of built
+> images not being available in docker. If you're building an image which has no
+> other image dependency, or if you're fine with using a remote image, then
+> nothing else should be done.
+>
+> However if you want to build images while reusing local built docker images
+> then you need to switch the driver used by `bake`. Run the following command
+> to do that:
+> ```sh
+> # List available drivers.
+> docker buildx ls
+> # Pick one that says `docker` under DRIVER/ENDPOINT and in the 'running' STATUS.
+> docker buildx use default
+> # or
+> docker buildx use colima
+> ```
+
 ## [python-crossbuild](python-crossbuild)
 A base python image with crossenv installed, providing the ability to
 cross-compile python packages for multiarch (commonly amd64 & arm64).
