@@ -28,3 +28,19 @@ supported_asset_types:
   - schedules
 
 asset_types: "{{ supported_asset_types }}"
+
+# A regex for each asset type for resources to ignore by name.
+ignore_assets:
+  execution_environments: ''
+  notification_templates: ''
+  organizations: ''
+  users: ''
+  teams: ''
+  credential_types: ''
+  credentials: ''
+  projects: ''
+  inventory: ''
+  inventory_sources: ''
+  job_templates: ''
+  workflow_job_templates: ''
+  schedules: ''

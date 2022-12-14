@@ -54,6 +54,11 @@
   copy:
     content: "{{ asset | to_nice_yaml(indent=2) }}"
     dest: "{{ asset_filename }}"
+  # Match against ignore regexes.
+  when:
+  - "asset_type not in ignore_assets or
+    ignore_assets[asset_type] == '' or
+    asset[asset_name_field] | regex_search(ignore_assets[asset_type], ignorecase=True) is none"
   loop: "{{ assets }}"
   loop_control:
     loop_var: asset
