@@ -8,3 +8,5 @@ services:
     container_name: ansible-images-actions-runner
     environment:
       - RUNNER_TOKEN=${RUNNER_TOKEN}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
