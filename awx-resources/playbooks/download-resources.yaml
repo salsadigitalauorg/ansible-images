@@ -16,4 +16,3 @@
     loop: "{{ asset_types }}"
     loop_control:
       loop_var: asset_type
-

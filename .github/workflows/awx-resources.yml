@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'awx-resources/Dockerfile'
+      - 'awx-resources/playbooks'
   workflow_dispatch:
     inputs:
       ansible_image_version:

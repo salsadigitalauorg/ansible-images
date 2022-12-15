@@ -119,7 +119,14 @@ api.EXPORTABLE_RESOURCES = [
     'schedules',
 ]
 
-api.EXPORTABLE_RELATIONS = ['Roles', 'NotificationTemplates', 'WorkflowJobTemplateNodes', 'Credentials', 'ExecutionEnvironments', 'Schedules']
+api.EXPORTABLE_RELATIONS = [
+    'Roles',
+    'NotificationTemplates',
+    'WorkflowJobTemplateNodes',
+    'Credentials',
+    'ExecutionEnvironments',
+    'Schedules',
+]
 
 api.DEPENDENT_EXPORT = [
     ('JobTemplate', 'Label'),
