@@ -6,6 +6,37 @@
   set_fact:
     asset_dir: "{{ [resource_dir, asset_type] | path_join }}"
 
+- name: "Reset variables for {{ asset_type }}"
+  set_fact:
+    asset_file_contents: []
+    filtered_asset_file_contents: []
+
+- name: "Read files for {{ asset_type }}"
+  set_fact:
+    asset_file_contents: "{{ asset_file_contents | default([]) +
+      [lookup('file', asset_file) | from_yaml()] }}"
+  loop: "{{ lookup('fileglob', asset_dir + '/*.yaml', wantlist=True) }}"
+  loop_control:
+    loop_var: asset_file
+
+- include_tasks:
+    file: ../../common/tasks/set-name-field.yaml
+
+- name: "Filter keys for {{ asset_type }}"
+  set_fact:
+    filtered_asset_file_contents: "{{ filtered_asset_file_contents | default([]) +
+      [asset_file_content | ansible.utils.remove_keys(target=['related'])] }}"
+  loop: "{{ asset_file_contents }}"
+  loop_control:
+    loop_var: asset_file_content
+    label: "{{ asset_file_content[asset_name_field] }}"
+  when: asset_type in filter_keys
+
+- name: "Copy unfiltered contents for {{ asset_type }}"
+  set_fact:
+    filtered_asset_file_contents: "{{ asset_file_contents }}"
+  when: asset_type not in filter_keys
+
 - name: "Import resource for {{ asset_type }}"
   awx.awx.import:
     controller_host: "{{ controller_host }}"
@@ -13,8 +44,7 @@
     controller_password: "{{ controller_password | default(omit) }}"
     controller_oauthtoken: "{{ controller_oauthtoken | default(omit) }}"
     assets: "{{ {asset_type: [asset_file_content]} }}"
-  loop: "{{ lookup('fileglob', asset_dir + '/*.yaml', wantlist=True) }}"
+  loop: "{{ filtered_asset_file_contents }}"
   loop_control:
-    loop_var: asset_file
-  vars:
-    asset_file_content: "{{ lookup('file', asset_file) | from_yaml() }}"
+    loop_var: asset_file_content
+    label: "{{ asset_file_content[asset_name_field] }}"

@@ -1,0 +1,16 @@
+- name: "Set name field for {{ asset_type }}"
+  set_fact:
+    asset_name_field: username
+  when: asset_type == 'users'
+
+- name: "Set name field for {{ asset_type }}"
+  set_fact:
+    asset_name_field: identifier
+  when: asset_type == 'workflow_job_template_nodes'
+
+- name: "Set name field for {{ asset_type }}"
+  set_fact:
+    asset_name_field: name
+  when:
+    - asset_type != 'users'
+    - asset_type != 'workflow_job_template_nodes'

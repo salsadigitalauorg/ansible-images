@@ -13,8 +13,8 @@ resource_dir: /resources
 # List of all asset types supported for downloading and creating.
 supported_asset_types:
   - execution_environments
-  - notification_templates
   - organizations
+  - notification_templates
   - users
   - teams
   - credential_types
