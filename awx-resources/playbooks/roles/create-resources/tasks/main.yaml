@@ -51,6 +51,7 @@
     controller_password: "{{ controller_password | default(omit) }}"
     controller_oauthtoken: "{{ controller_oauthtoken | default(omit) }}"
     assets: "{{ {asset_type: [asset_file_content]} }}"
+  retries: 3
   loop: "{{ filtered_asset_file_contents }}"
   loop_control:
     loop_var: asset_file_content
