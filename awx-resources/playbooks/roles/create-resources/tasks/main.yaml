@@ -18,6 +18,13 @@
   loop: "{{ lookup('fileglob', asset_dir + '/*.yaml', wantlist=True) }}"
   loop_control:
     loop_var: asset_file
+  when: single_file is not defined
+
+- name: "Read single {{ asset_type }} file {{ single_file }}"
+  set_fact:
+    asset_file_contents: "{{ [lookup('file', asset_dir + '/' + single_file +
+      '.yaml') | from_yaml()] }}"
+  when: single_file is defined
 
 - include_tasks:
     file: ../../common/tasks/set-name-field.yaml
