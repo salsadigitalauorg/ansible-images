@@ -32,7 +32,7 @@
 - name: "Filter keys for {{ asset_type }}"
   set_fact:
     filtered_asset_file_contents: "{{ filtered_asset_file_contents | default([]) +
-      [asset_file_content | ansible.utils.remove_keys(target=['related'])] }}"
+      [asset_file_content | ansible.utils.remove_keys(target=filter_keys[asset_type])] }}"
   loop: "{{ asset_file_contents }}"
   loop_control:
     loop_var: asset_file_content
