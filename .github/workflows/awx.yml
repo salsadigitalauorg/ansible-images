@@ -60,11 +60,11 @@ jobs:
             -e registry_username=${{ github.actor }} \
             -e registry_password=${{ secrets.GITHUB_TOKEN }} \
             -e awx_image=${{ env.IMAGE_NAME }} \
-            -e awx_version=${{ input.awx_version }}
+            -e awx_version=${{ inputs.awx_version }}
         if: ${{ !contains(fromJSON(env.BUILD_CUSTOM_SCRIPT_VERSIONS), inputs.awx_version) }}
 
       - name: Tag & push
         run: |
-          docker tag ${{ env.IMAGE_NAME }}:${{ input.awx_version }} ghcr.io/${{ env.IMAGE_NAME }}:${{ input.awx_version }}
-          docker push ghcr.io/${{ env.IMAGE_NAME }}:${{ input.awx_version }}
+          docker tag ${{ env.IMAGE_NAME }}:${{ inputs.awx_version }} ghcr.io/${{ env.IMAGE_NAME }}:${{ inputs.awx_version }}
+          docker push ghcr.io/${{ env.IMAGE_NAME }}:${{ inputs.awx_version }}
         if: ${{ !contains(fromJSON(env.BUILD_CUSTOM_SCRIPT_VERSIONS), inputs.awx_version) }}
