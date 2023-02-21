@@ -2,6 +2,14 @@ name: awx
 
 on:
   workflow_dispatch:
+    inputs:
+      awx_version:
+        description: 'Version of AWX to build'
+        default: '21.12.0'
+        type: choice
+        options:
+        - '19.4.0'
+        - '21.12.0'
 
 env:
   REGISTRY: ghcr.io
