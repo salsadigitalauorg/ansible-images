@@ -13,5 +13,5 @@ export RUNNER_TOKEN=the-token-you-got-from-github
 
 Start the runner:
 ```sh
-docker-compose up -d
+docker-compose up -d --build
 ```
