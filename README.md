@@ -45,14 +45,6 @@ Starts from the **python-crossbuild** image and installs Ansible.
 Starts from the **python-crossbuild** image and installs Ansible, pytest and
 their dependencies for all the supported versions of python.
 
-## [ansible-runner](ansible-runner)
-Building from the **python-crossbuild** and **ansible** images and using the
-official Docker python base image, while also taking bits and pieces from the
-official [ansible-runner](https://github.com/ansible/ansible-runner/blob/devel/Dockerfile) image to create a base for AWX Execution Environments that are multiarch and more versatile.
-
-## [ansible-runner-php](ansible-runner-php)
-Builds on **ansible-runner** and installs PHP 8.1.
-
 ## [awx-resources](awx-resources)
 Builds on the **ansible** image, installs awxkit and the playbooks for importing
 and exporting AWX resources. Handy for tracking your inventories, job templates

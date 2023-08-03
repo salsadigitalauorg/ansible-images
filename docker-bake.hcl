@@ -23,7 +23,7 @@ variable "AWX_VERSION" {
 }
 
 group "default" {
-    targets = ["ansible-runner"]
+    targets = ["ansible"]
 }
 
 target "python-crossbuild" {
@@ -61,44 +61,11 @@ target "ansible-test" {
     tags = ["${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-test:latest"]
 }
 
-target "ansible-runner" {
-    inherits = ["ansible-images-base"]
-    context = "ansible-runner"
-    tags = [
-        "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner:${PYTHON_VERSION}",
-        equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner:latest": "",
-    ]
-    args = {
-        PYTHON_VERSION = "${PYTHON_VERSION}"
-    }
-}
-
-target "ansible-runner-php" {
-    inherits = ["ansible-images-base"]
-    context = "ansible-runner-php"
-    tags = [
-        "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner-php:${PYTHON_VERSION}",
-        equal(DEFAULT_PYTHON_VERSION,PYTHON_VERSION) ? "${IMAGE_REGISTRY}/${IMAGE_ORG}/ansible-runner-php:latest": "",
-    ]
-    args = {
-        PYTHON_VERSION = "${PYTHON_VERSION}"
-    }
-}
-
 target "awx" {
     inherits = ["ansible-images-base"]
     context = "awx/awx"
     tags = [
         "${IMAGE_REGISTRY}/${IMAGE_ORG}/awx:${AWX_VERSION}",
-    ]
-    platforms = ["linux/arm64"]
-}
-
-target "awx-ee" {
-    inherits = ["ansible-images-base"]
-    context = "awx-ee"
-    tags = [
-        "${IMAGE_REGISTRY}/${IMAGE_ORG}/awx-ee:latest",
     ]
     platforms = ["linux/arm64"]
 }
