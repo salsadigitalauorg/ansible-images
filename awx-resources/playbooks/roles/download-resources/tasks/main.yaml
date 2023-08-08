@@ -4,10 +4,6 @@
 
 - name: "Export resources for {{ asset_type }}"
   export_partial:
-    controller_host: "{{ controller_host }}"
-    controller_username: "{{ controller_username }}"
-    controller_password: "{{ controller_password | default(omit) }}"
-    controller_oauthtoken: "{{ controller_oauthtoken | default(omit) }}"
     execution_environments: "{{ (asset_type == 'execution_environments') | ternary('all', omit) }}"
     notification_templates: "{{ (asset_type == 'notification_templates') | ternary('all', omit) }}"
     organizations: "{{ (asset_type == 'organizations') | ternary('all', omit) }}"

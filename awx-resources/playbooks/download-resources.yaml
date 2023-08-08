@@ -5,6 +5,9 @@
   roles:
   - common
   tasks:
+  - name: Output AWX host
+    debug: msg="Download resources from {{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
+
   - name: Ensure main resources dir exists
     file:
       path: "{{ resource_dir }}"

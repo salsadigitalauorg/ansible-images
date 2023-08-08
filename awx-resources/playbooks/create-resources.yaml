@@ -6,7 +6,7 @@
   - common
   tasks:
   - name: Output AWX host
-    debug: msg="Creating resources on {{ controller_host }}"
+    debug: msg="Creating resources on {{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
 
   - name: Check existence of resources directory
     stat:
@@ -17,6 +17,12 @@
     assert:
       that: resources_dir_stat.stat.exists
       quiet: true
+
+  - name: Request confirmation
+    pause:
+      prompt: |
+        Please note that this operation may overwrite changes on the Production
+        instance! Press return to continue. Press Ctrl+c and then "a" to abort.
 
   - name: Create resources
     include_role:
