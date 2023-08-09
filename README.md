@@ -10,7 +10,7 @@ Python versions:
 > Quick note about using `docker buildx bake` for building single arch images locally.
 > Any of the images can be built using the command
 > ```sh
-> docker buildx bake [image=name] \
+> docker buildx bake [image-name] \
 >   --progress=plain --set "*.platform=linux/$(uname -m)" --load
 > ```
 > By default `bake` will use the `docker-container` driver, which uses a

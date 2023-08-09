@@ -19,7 +19,7 @@ variable "PYTHON_VERSION" {
 }
 
 variable "AWX_VERSION" {
-    default = "19.4.0"
+    default = "22.6.0"
 }
 
 group "default" {

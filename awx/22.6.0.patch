@@ -1,0 +1,7 @@
+diff --git a/.dockerignore b/.dockerignore
+index 96f81bce74..94143827ed 100644
+--- a/.dockerignore
++++ b/.dockerignore
+@@ -1,2 +1 @@
+ Dockerfile
+-.git
