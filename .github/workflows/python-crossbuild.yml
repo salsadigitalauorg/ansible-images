@@ -39,5 +39,7 @@ jobs:
         with:
           push: true
           targets: python-crossbuild
+          provenance: false
+          sbom: false
         env:
           PYTHON_VERSION: ${{ matrix.python_version }}

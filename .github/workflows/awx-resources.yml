@@ -56,5 +56,7 @@ jobs:
         with:
           push: true
           targets: awx-resources
+          provenance: false
+          sbom: false
         env:
           ANSIBLE_IMAGE_VERSION: ${{ steps.ansible_image_version.outputs.value }}

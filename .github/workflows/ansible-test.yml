@@ -37,3 +37,5 @@ jobs:
         with:
           push: true
           targets: ansible-test
+          provenance: false
+          sbom: false

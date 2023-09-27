@@ -53,5 +53,7 @@ jobs:
         with:
           push: true
           targets: ansible
+          provenance: false
+          sbom: false
         env:
           PYTHON_VERSION: ${{ steps.python_version.outputs.value }}
