@@ -39,7 +39,7 @@ FROM --platform=$TARGETPLATFORM python:3.9 AS python_39
 FROM --platform=$TARGETPLATFORM python:3.10 AS python_310
 FROM --platform=$TARGETPLATFORM python:3.11 AS python_311
 
-FROM buildpack-deps:bullseye
+FROM buildpack-deps:stable
 
 RUN mkdir -p /opt/pythons/3.8 /opt/pythons/3.9 /opt/pythons/3.10
 
